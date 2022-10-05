@@ -25,6 +25,12 @@ public class GrandePalindromoPrimoTest {
             startPoint = "140672630100"; //indice: 140.672.630.233
             got = GrandePalindromoPrimo.findPrimePalindromeInPi( startPoint, decimais );
             assertEquals(want, got);
+            //Test 3
+            want = "960945763984348936367549069";
+            decimais = 27;
+            startPoint = "140672630100"; //indice: 
+            got = GrandePalindromoPrimo.findPrimePalindromeInPi( startPoint, decimais );
+            assertEquals(want, got);
 	}
 
 }
