@@ -7,7 +7,6 @@ package JAVA;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -22,6 +21,8 @@ public class GrandePalindromoPrimo {
      * Carrega trilhoes de dados do PI https://pi.delivery
      */
     public static String findPrimePalindromeInPi(String startPoint, int decimal) {
+        System.out.println("Executando teste com posicao inicial do PI em: " + startPoint + " para " + decimal + " digitos");
+
         try {
             URL url = new URL("https://api.pi.delivery/v1/pi?start="+startPoint+"&numberOfDigits=1000");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -58,6 +59,11 @@ public class GrandePalindromoPrimo {
         } catch ( Exception err ) {
             System.out.println( err );
             return "erro";
+        }
+
+        //verificar fim do arquivo de trilhoes para interromper looping.
+        if ( startPoint.contains("99999999999") ) {
+            return "EOF";
         }
 
         //recursividade para chamada limitada da API.
@@ -106,10 +112,9 @@ public class GrandePalindromoPrimo {
 
     /**
      * Check if the number is prime.
-     * https://www.numberempire.com/primenumbers.php
      * Adaptado de: https://www.mentebinaria.com.br/forums/topic/795-uma-otimiza%C3%A7%C3%A3o-interessante-para-testar-se-um-valor-%C3%A9-primo/
      */
-    private static boolean isPrime(String number) {
+    private static boolean isPrime(String number) throws Exception {
         //problemas com numeros muito grandes
         if ( number.length() > 15 ) {
             return isBigPrime( number );
@@ -121,41 +126,31 @@ public class GrandePalindromoPrimo {
         for ( int i = 3; i <= raiz; i += 2 ) {
             if ( ( Integer.parseInt(number) % i ) == 0 ) return false;
         }
-        /*opcao alternativa, precisa testar e comparar performance.
-        for ( let i = 7; i <= raiz; i += 6 ) {
-            if ( ( number % i ) == 0 ) return false;
-            i += 4;
-            if ( ( number % i ) == 0 ) return false;
-            i += 2;
-            if ( ( number % i ) == 0 ) return false;
-            i += 4;
-            if ( ( number % i ) == 0 ) return false;
-            i += 2;
-            if ( ( number % i ) == 0 ) return false;
-            i += 4;
-            if ( ( number % i ) == 0 ) return false;
-            i += 6;
-            if ( ( number % i ) == 0 ) return false;
-            i += 2;
-            if ( ( number % i ) == 0 ) return false;
-        }
-        */
     
         return true;
     }
 
-    //nao funcionou ainda.. ficou processando sem retorno...
-    private static boolean isBigPrime(String n) {
-        BigInteger number = new BigInteger(n);
+    /**
+     * solucao temporaria para verificar se palidromos acima de 15 digitos sao primos
+     * https://www.numberempire.com/primenumbers.php
+     */
+    private static boolean isBigPrime(String number) throws Exception {
+        URL u = new URL("https://www.numberempire.com/primenumbers.php?number="+number);
+        HttpURLConnection c = (HttpURLConnection) u.openConnection();
+        c.setRequestMethod("GET");
 
-        //so precisamos testar até a raiz quadrada
-        long raiz = number.sqrt().longValue();
+        BufferedReader input = new BufferedReader(new InputStreamReader( c.getInputStream() ));
+        String html = input.readLine();
+        input.close();
+        
+        //verifica o retorno
+        return html.contains(number+" is a prime");
 
-        for ( int i = 3; i <= raiz; i += 2 ) {
-            //if ( number.mod(BigInteger.valueOf(i)) == BigInteger.valueOf(0) ) {
-            if ( BigInteger.valueOf(i).mod(number) == BigInteger.valueOf(0) ) return false;
-        }
-
-        return true;
+        //BigInteger number = new BigInteger(n);
+        //long raiz = number.sqrt().longValue();
+        //for ( int i = 3; i <= raiz; i += 2 ) {
+            //if ( BigInteger.valueOf(i).mod(number) == BigInteger.valueOf(0) ) return false;
+        //}
+        //return true;
     }
 }
