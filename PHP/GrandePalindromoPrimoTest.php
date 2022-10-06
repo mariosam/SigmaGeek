@@ -28,5 +28,12 @@ class GrandePalindromoPrimoTest extends TestCase {
         $got = $game->findPrimePalindromeInPi( $startPoint, $decimais );
         echo "\nTest 2: retornou " . $got . " == esperado: " . $want;
         $this->assertEquals($want, $got);
+        //Test 3: tamanho 27
+        $startPoint = "0"; //indice: 140.672.630.233
+        $decimais = 27;
+        $want = "960945763984348936367549069";
+        $got = $game->findPrimePalindromeInPi( $startPoint, $decimais );
+        echo "\nTest 3: retornou " . $got . " == esperado: " . $want;
+        $this->assertEquals($want, $got);
     }
 }
