@@ -16,6 +16,10 @@ TEST('Starting test...', (t) => {
     startPoint = "140672630100" //indice: 140.672.630.233
     decimais = 21
     t.assert(findPrimePalindromeInPi( startPoint, decimais ) === "151978145606541879151", "Expect: 151978145606541879151")
+    //Test 3: tamanho 27
+    startPoint = "140672630100" //indice: 140.672.630.233
+    decimais = 27
+    t.assert(findPrimePalindromeInPi( startPoint, decimais ) === "960945763984348936367549069", "Expect: 960945763984348936367549069")
 
     t.end()
 })
