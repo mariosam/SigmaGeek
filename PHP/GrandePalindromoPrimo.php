@@ -39,6 +39,11 @@ class GrandePalindromoPrimo {
                     }
                 }
             } 
+
+            //verificar fim do arquivo de trilhoes para interromper looping.
+            if ( strpbrk($startPoint, '99999999999') ) {
+                return "EOF";
+            }
     
             //recursividade para chamada limitada da API.
             return $this->findPrimePalindromeInPi( $startPoint+(1000-$decimal), $decimal );
@@ -84,6 +89,10 @@ class GrandePalindromoPrimo {
      * Check if the number is prime.
      */
     private function isPrime( $number ): bool {
+        if ( strlen( $number ) > 15 ) {
+            return $this->isOnlinePrime( $number );
+        }
+
         //so precisamos testar até a raiz quadrada
         $raiz = sqrt($number);
 
@@ -94,5 +103,28 @@ class GrandePalindromoPrimo {
         }
 
         return true;
+    }
+
+    /**
+     * solucao temporaria para verificar se palidromos acima de 15 digitos sao primos
+     * https://www.numberempire.com/primenumbers.php
+     */
+    private function isOnlinePrime( $number ): bool {
+        //esse header eh para evitar 403 (site bloqueando crawlers)
+        $context = stream_context_create(
+            array(
+                "http" => array(
+                    "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+                )
+            )
+        );
+        $resp = file_get_contents("https://www.numberempire.com/primenumbers.php?number=".$number, false, $context);
+
+        //verifica o retorno
+        $check = strstr($resp, $number." is a prime");
+
+        if ( $check > 0 ) return true;
+
+        return false;
     }
 }
